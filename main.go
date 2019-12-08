@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/gobuffalo/packr"
 	"html/template"
 	"log"
 	"os"
@@ -17,7 +18,7 @@ func main() {
 	name := flag.String("name", "", "Your project name. Needed")
 	projectType := flag.String("type", "mpa", "Project type. Can be 'mpa' 'webpack' or 'api'")
 	flag.Parse()
-	files = template.Must(template.New("files").ParseGlob("./files/*"))
+	loadTemplates()
 	if len(*name) == 0 {
 		log.Fatalln("Invalid project name")
 	}
@@ -33,6 +34,19 @@ func main() {
 		break
 	default:
 		createMpaProject()
+	}
+}
+
+func loadTemplates() {
+	box := packr.NewBox("./files")
+	boxFiles := box.List()
+	files = template.New("files")
+	for _, boxFile := range boxFiles {
+		data, err := box.FindString(boxFile)
+		if err != nil {
+			log.Fatalln("Error loading virtual file: %s\n", err)
+		}
+		files.Parse(data)
 	}
 }
 
