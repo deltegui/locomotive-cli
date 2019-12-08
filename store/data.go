@@ -138,8 +138,6 @@ build
 
 import (
 	"github.com/deltegui/locomotive"
-
-	"{{.}}/src/domain"
 )
 
 func Register() {
