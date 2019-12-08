@@ -1,5 +1,6 @@
-//THIS FILE IS GENERATED WITH GO:GENERATE.
 package store
+
+//store THIS FILE IS GENERATED WITH GO:GENERATE.
 
 var store map[string]string = map[string]string{
 	"apierrorcontroller": `package controllers

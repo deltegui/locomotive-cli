@@ -9,8 +9,9 @@ import (
 )
 
 const header string = `
-//THIS FILE IS GENERATED WITH GO:GENERATE.
 package store
+
+//store THIS FILE IS GENERATED WITH GO:GENERATE.
 
 var store map[string]string = map[string]string {
 `
