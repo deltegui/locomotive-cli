@@ -1,3 +1,4 @@
+//THIS FILE IS GENERATED WITH GO:GENERATE.
 package store
 
 var store map[string]string = map[string]string{

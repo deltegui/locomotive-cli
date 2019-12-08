@@ -9,6 +9,7 @@ import (
 )
 
 const header string = `
+//THIS FILE IS GENERATED WITH GO:GENERATE.
 package store
 
 var store map[string]string = map[string]string {
@@ -21,7 +22,7 @@ type dataFile struct {
 }
 
 func newDataFile() dataFile {
-	output, err := os.Create("./files/data.go")
+	output, err := os.Create("./store/data.go")
 	if err != nil {
 		log.Fatalf("Cannot create file: %s\n", err)
 	}
