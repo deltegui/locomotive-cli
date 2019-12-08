@@ -3,22 +3,21 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/gobuffalo/packr"
 	"html/template"
 	"log"
 	"os"
+
+	"github.com/deltegui/locomotive-cli/store"
 )
 
-var (
-	files       *template.Template
-	projectName string
-)
+//go:generate go run ./generators/files.go
+
+var projectName string
 
 func main() {
 	name := flag.String("name", "", "Your project name. Needed")
 	projectType := flag.String("type", "mpa", "Project type. Can be 'mpa' 'webpack' or 'api'")
 	flag.Parse()
-	loadTemplates()
 	if len(*name) == 0 {
 		log.Fatalln("Invalid project name")
 	}
@@ -34,19 +33,6 @@ func main() {
 		break
 	default:
 		createMpaProject()
-	}
-}
-
-func loadTemplates() {
-	box := packr.NewBox("./files")
-	boxFiles := box.List()
-	files = template.New("files")
-	for _, boxFile := range boxFiles {
-		data, err := box.FindString(boxFile)
-		if err != nil {
-			log.Fatalln("Error loading virtual file: %s\n", err)
-		}
-		files.Parse(data)
 	}
 }
 
@@ -98,13 +84,18 @@ func createAPIProject() {
 	writeFile("/src/controllers/error.controller.go", "apierrorcontroller")
 }
 
-func writeFile(path, template string) {
+func writeFile(path, templName string) {
 	output, err := os.Create(fmt.Sprintf("%s%s", projectName, path))
 	if err != nil {
 		log.Fatalf("Cannot create file: %s\n", err)
 	}
 	defer output.Close()
-	files.ExecuteTemplate(output, template, projectName)
+	tmpl := template.New("a")
+	tmpl, err = tmpl.Parse(store.Get(templName))
+	if err != nil {
+		panic(err)
+	}
+	tmpl.Execute(output, projectName)
 }
 
 func createDir(path string) {
