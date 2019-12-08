@@ -1,4 +1,4 @@
-module locomotivecli
+module github.com/deltegui/locomotive-cli
 
 go 1.13
 
