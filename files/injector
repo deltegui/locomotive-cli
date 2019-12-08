@@ -1,0 +1,11 @@
+package controllers
+
+import (
+	"github.com/deltegui/locomotive"
+
+	"{{.}}/src/domain"
+)
+
+func Register() {
+	locomotive.MapRoot(NewErrorController)
+}

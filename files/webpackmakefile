@@ -1,0 +1,16 @@
+build:
+	mkdir ./build
+	go build -o ./build/fynd ./main.go
+	pro=pro node ./node_modules/webpack/bin/webpack.js --config ./webpack.config.js
+
+clean: remove-dev-assets
+	rm -rf ./build
+
+dev-assets:
+	node ./node_modules/webpack/bin/webpack.js --config ./webpack.config.js
+
+remove-dev-assets:
+	rm -rf ./static/bundle.js
+
+watch: dev-assets
+	reflex -r '(.go|.html)' -s -R 'node_modules' -- sh -c 'go run ./main.go'

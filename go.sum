@@ -1,0 +1,8 @@
+github.com/deltegui/configloader v1.0.1 h1:4f82hDrI6x9+c7wlcaEAOOuoPK1SxywVLRIMPW8xHbQ=
+github.com/deltegui/configloader v1.0.1/go.mod h1:ClfIx7ZcwQANyhdNXnsq4UR2PIGlwObTzZEerlTO2Vc=
+github.com/deltegui/locomotive v0.4.0 h1:LacCd12I5nCO0/irXzX2JhqyJrlaaHtMvUG05V3QeY0=
+github.com/deltegui/locomotive v0.4.0/go.mod h1:/zfbF3zxhZ3+TglpXwfqnzXYtnHZdj1W9uULoEH8TX4=
+github.com/golang-collections/collections v0.0.0-20130729185459-604e922904d3 h1:zN2lZNZRflqFyxVaTIU61KNKQ9C0055u9CAfpmqUvo4=
+github.com/golang-collections/collections v0.0.0-20130729185459-604e922904d3/go.mod h1:nPpo7qLxd6XL3hWJG/O60sR8ZKfMCiIoNap5GvD12KU=
+github.com/gorilla/mux v1.7.3 h1:gnP5JzjVOuiZD07fKKToCAOjS0yOpj/qPETTXCCS6hw=
+github.com/gorilla/mux v1.7.3/go.mod h1:1lud6UwP+6orDFRuTfBEV8e9/aOM/c4fVVCaMa2zaAs=
