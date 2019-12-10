@@ -16,7 +16,7 @@ var projectName string
 
 func main() {
 	name := flag.String("name", "", "Your project name. Needed")
-	projectType := flag.String("type", "mpa", "Project type. Can be 'mpa' 'webpack' or 'api'")
+	projectType := flag.String("type", "api", "Project type. Can be 'mpa' 'webpack' or 'api'")
 	flag.Parse()
 	if len(*name) == 0 {
 		log.Fatalln("Invalid project name")
@@ -31,12 +31,17 @@ func main() {
 	case "api":
 		createAPIProject()
 		break
-	default:
+	case "mpa":
 		createMpaProject()
+		break
+	default:
+		log.Fatalln("Invalid project type")
 	}
+	log.Println("You are ready to GO! 🚂")
 }
 
 func createDefaultProject() {
+	log.Println("Generating project...")
 	createDir("/src")
 	createDir("/src/configuration")
 	createDir("/src/controllers")
@@ -56,6 +61,7 @@ func createDefaultProject() {
 }
 
 func createMpaProject() {
+	log.Println("Creating MPA project...")
 	createDir("/static")
 	createDir("/templates")
 	createDir("/templates/errors")
@@ -66,6 +72,7 @@ func createMpaProject() {
 }
 
 func createWebpackProject() {
+	log.Println("Creating Webpack project...")
 	createDir("/static")
 	createDir("/templates")
 	createDir("/templates/errors")
@@ -79,6 +86,7 @@ func createWebpackProject() {
 }
 
 func createAPIProject() {
+	log.Println("Creating API project...")
 	writeFile("/makefile", "mpamakefile")
 	writeFile("/main.go", "apimain")
 	writeFile("/src/controllers/error.controller.go", "apierrorcontroller")
