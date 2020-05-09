@@ -1,10 +1,9 @@
-
 package store
 
 //store THIS FILE IS GENERATED WITH GO:GENERATE.
 
-var store map[string]string = map[string]string {
-"apierrorcontroller": `package controllers
+var store map[string]string = map[string]string{
+	"apierrorcontroller": `package controllers
 
 import (
 	"github.com/deltegui/locomotive"
@@ -28,7 +27,7 @@ func (ErrorController ErrorController) GetMappings() []locomotive.Mapping {
 	}
 }
 `,
-"apimain": `package main
+	"apimain": `package main
 
 import (
 	"{{.}}/src/configuration"
@@ -52,13 +51,13 @@ func main() {
 	locomotive.Run(config.ListenURL)
 }
 `,
-"config": `package configuration
+	"config": `package configuration
 
 import "github.com/deltegui/configloader"
 
 //Configuration representation of json config file
 type Configuration struct {
-	ListenURL string `paramName:"url"`
+	ListenURL string ` + "`paramName:\"url\"`" + `
 }
 
 //Load configuration from config.json file and overwrite
@@ -69,10 +68,10 @@ func Load() Configuration {
 		AddHook(configloader.CreateParamsHook()).
 		Retrieve().(*Configuration)
 }`,
-"configjson": `{
+	"configjson": `{
     "ListenURL": "localhost:8080"
 }`,
-"error": `package domain
+	"error": `package domain
 
 import "fmt"
 
@@ -92,7 +91,7 @@ var (
 	InternalError       = UseCaseError{Code: 001, Reason: "Internal Error", Fix: ""}
 )
 `,
-"errorcontroller": `package controllers
+	"errorcontroller": `package controllers
 
 import (
 	"github.com/deltegui/locomotive"
@@ -116,7 +115,7 @@ func (ErrorController ErrorController) GetMappings() []locomotive.Mapping {
 	}
 }
 `,
-"gateways": `package domain
+	"gateways": `package domain
 
 type UseCaseRequest interface{}
 
@@ -126,11 +125,11 @@ type UseCase interface {
 	Exec(Presenter, UseCaseRequest)
 }
 `,
-"gitignore": `.DS_Store
+	"gitignore": `.DS_Store
 node_modules
 build
 /static/bundle.js`,
-"injector": `package controllers
+	"injector": `package controllers
 
 import (
 	"github.com/deltegui/locomotive"
@@ -139,8 +138,8 @@ import (
 func Register() {
 	locomotive.MapRoot(NewErrorController)
 }`,
-"logo": `LOGO`,
-"mpamain": `package main
+	"logo": `LOGO`,
+	"mpamain": `package main
 
 import (
 	"{{.}}/src/configuration"
@@ -162,7 +161,7 @@ func main() {
 	locomotive.Run(config.ListenURL)
 }
 `,
-"mpamakefile": `build:
+	"mpamakefile": `build:
 	mkdir ./build
 	go build -o ./build/fynd ./main.go
 
@@ -171,7 +170,7 @@ clean:
 
 watch:
 	reflex -r '(.go|.html)' -s -- sh -c 'go run ./main.go'`,
-"notfound.html": `<!DOCTYPE html>
+	"notfound.html": `<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -183,7 +182,7 @@ watch:
     404
 </body>
 </html>`,
-"packagejson": `{
+	"packagejson": `{
   "name": "{{.}}",
   "version": "0.1.0",
   "description": "",
@@ -204,7 +203,7 @@ watch:
     "webpack-cli": "^3.3.10"
   }
 }`,
-"webpackconf": `const path = require('path');
+	"webpackconf": `const path = require('path');
 const MinifyPlugin = require('babel-minify-webpack-plugin')
 
 console.log((process.env.pro) ? 'production' : 'development');
@@ -243,8 +242,8 @@ module.exports = {
   },
   plugins: [new MinifyPlugin()],
 };`,
-"webpackindexjs": ``,
-"webpackmakefile": `build:
+	"webpackindexjs": ``,
+	"webpackmakefile": `build:
 	mkdir ./build
 	go build -o ./build/fynd ./main.go
 	pro=pro node ./node_modules/webpack/bin/webpack.js --config ./webpack.config.js
