@@ -39,7 +39,7 @@ import (
 
 func main() {
 	locomotive.Configure().
-		SetProjectInfo("Phoenix", "0.1.0").
+		SetProjectInfo("{{.}}", "0.1.0").
 		EnableLogoFile()
 	config := configuration.Load()
 	controllers.Register()
@@ -146,7 +146,7 @@ import (
 
 func main() {
 	locomotive.Configure().
-		SetProjectInfo("Phoenix", "0.1.0").
+		SetProjectInfo("{{.}}", "0.1.0").
 		EnableLogoFile().
 		EnableStaticServer().
 		EnableTemplates()
