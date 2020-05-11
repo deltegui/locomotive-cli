@@ -37,15 +37,10 @@ import (
 	"github.com/deltegui/locomotive/vars"
 )
 
-func setVariables() {
-	vars.Name = "{{.}}"
-	vars.Version = "0.1.0"
-	vars.EnableStaticServer = false
-	vars.EnableTemplates = false
-}
-
 func main() {
-	setVariables()
+	locomotive.Configure().
+		SetProjectInfo("Phoenix", "0.1.0").
+		EnableLogoFile()
 	config := configuration.Load()
 	controllers.Register()
 	locomotive.Run(config.ListenURL)
@@ -149,13 +144,12 @@ import (
 	"github.com/deltegui/locomotive/vars"
 )
 
-func setVariables() {
-	vars.Name = "{{.}}"
-	vars.Version = "0.1.0"
-}
-
 func main() {
-	setVariables()
+	locomotive.Configure().
+		SetProjectInfo("Phoenix", "0.1.0").
+		EnableLogoFile().
+		EnableStaticServer().
+		EnableTemplates()
 	config := configuration.Load()
 	controllers.Register()
 	locomotive.Run(config.ListenURL)
