@@ -6,24 +6,13 @@ var store map[string]string = map[string]string{
 	"apierrorcontroller": `package controllers
 
 import (
-	"github.com/deltegui/locomotive"
+	"{{.}}/src/domain"
 	"net/http"
 )
 
-type ErrorController struct{}
-
-func NewErrorController() ErrorController {
-	return ErrorController{}
-}
-
-func (ErrorController ErrorController) NotFound(w http.ResponseWriter, req *http.Request) {
-	presenter := locomotive.JSONPresenter{w}
-	presenter.Present(struct{Code string}{Code: "404"})
-}
-
-func (ErrorController ErrorController) GetMappings() []locomotive.Mapping {
-	return []locomotive.Mapping{
-		{Method: locomotive.Get, Handler: ErrorController.NotFound, Endpoint: "404"},
+func NotFoundError() http.HandlerFunc {
+	return func(w http.ResponseWriter, req *http.Request) {
+		domain.NewJSONPresenter(w).Present(struct{ Code string }{Code: "404"})
 	}
 }
 `,
@@ -33,17 +22,16 @@ import (
 	"{{.}}/src/configuration"
 	"{{.}}/src/controllers"
 
-	"github.com/deltegui/locomotive"
-	"github.com/deltegui/locomotive/vars"
+	"github.com/deltegui/phoenix"
 )
 
 func main() {
-	locomotive.Configure().
+	phoenix.Configure().
 		SetProjectInfo("{{.}}", "0.1.0").
 		EnableLogoFile()
 	config := configuration.Load()
 	controllers.Register()
-	locomotive.Run(config.ListenURL)
+	phoenix.Run(config.ListenURL)
 }
 `,
 	"config": `package configuration
@@ -89,28 +77,52 @@ var (
 	"errorcontroller": `package controllers
 
 import (
-	"github.com/deltegui/locomotive"
 	"net/http"
+
+	"github.com/deltegui/phoenix"
 )
 
-type ErrorController struct{}
-
-func NewErrorController() ErrorController {
-	return ErrorController{}
-}
-
-func (ErrorController ErrorController) NotFound(w http.ResponseWriter, req *http.Request) {
-	presenter := locomotive.HTMLPresenter{w}
-	presenter.Present(nil)
-}
-
-func (ErrorController ErrorController) GetMappings() []locomotive.Mapping {
-	return []locomotive.Mapping{
-		{Method: locomotive.Get, Handler: ErrorController.NotFound, Endpoint: "404"},
+func NotFoundError() http.HandlerFunc {
+	return func(w http.ResponseWriter, req *http.Request) {
+		renderer := phoenix.HTMLRenderer{w}
+		renderer.RenderWithMeta(nil, phoenix.RenderMetadata{"notfound.html"})
 	}
 }
 `,
 	"gateways": `package domain
+
+import (
+	"net/http"
+
+	"github.com/deltegui/phoenix"
+)
+
+type Presenter interface {
+	Present(data interface{})
+	PresentError(data error)
+}
+
+type BridgePresenter struct {
+	Renderer phoenix.Renderer
+}
+
+func (b BridgePresenter) Present(data interface{}) {
+	b.Renderer.Render(data)
+}
+
+func (b BridgePresenter) PresentError(err error) {
+	b.Renderer.RenderError(err)
+}
+
+type JSONPresenter struct {
+	BridgePresenter
+}
+
+func NewJSONPresenter(w http.ResponseWriter) JSONPresenter {
+	return JSONPresenter{
+		BridgePresenter: BridgePresenter{phoenix.JSONRenderer{w}},
+	}
+}
 
 type UseCaseRequest interface{}
 
@@ -127,32 +139,31 @@ build
 	"injector": `package controllers
 
 import (
-	"github.com/deltegui/locomotive"
+	"github.com/deltegui/phoenix"
 )
 
 func Register() {
-	locomotive.MapRoot(NewErrorController)
-}`,
-	"logo": `LOGO`,
+	phoenix.MapRoot(NotFoundError)
+}
+`,
 	"mpamain": `package main
 
 import (
 	"{{.}}/src/configuration"
 	"{{.}}/src/controllers"
 
-	"github.com/deltegui/locomotive"
-	"github.com/deltegui/locomotive/vars"
+	"github.com/deltegui/phoenix"
 )
 
 func main() {
-	locomotive.Configure().
+	phoenix.Configure().
 		SetProjectInfo("{{.}}", "0.1.0").
 		EnableLogoFile().
 		EnableStaticServer().
 		EnableTemplates()
 	config := configuration.Load()
 	controllers.Register()
-	locomotive.Run(config.ListenURL)
+	phoenix.Run(config.ListenURL)
 }
 `,
 	"mpamakefile": `build:

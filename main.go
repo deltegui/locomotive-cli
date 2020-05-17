@@ -1,28 +1,29 @@
 package main
 
 import (
+	"bytes"
 	"flag"
 	"fmt"
 	"html/template"
 	"os"
 
-	"github.com/deltegui/locomotive-cli/store"
+	"github.com/deltegui/phoenix-cli/store"
 )
 
 //go:generate go run ./generators/files.go
 
-const version string = "0.1.13"
+const version string = "0.1.14"
 
 var projectName string
 
 func main() {
-	versionFlag := flag.Bool("v", false, "Shows locomotive-cli version")
-	name := flag.String("new", "", "Creates new project. Usage: locomotive-cli -new [your project name]")
+	versionFlag := flag.Bool("v", false, "Shows phoenix-cli version")
+	name := flag.String("new", "", "Creates new project. Usage: phoenix-cli -new [your project name]")
 	projectType := flag.String("type", "api", "Project type. Can be 'mpa' 'webpack' or 'api'")
 	flag.Parse()
 	printLogo()
 	if *versionFlag {
-		fmt.Printf("locomotive-cli v%s\n", version)
+		fmt.Printf("phoenix-cli v%s\n", version)
 		os.Exit(0)
 	}
 	if len(*name) == 0 {
@@ -48,7 +49,7 @@ func main() {
 		flag.PrintDefaults()
 		os.Exit(1)
 	}
-	fmt.Println("You are ready to GO! 🚂")
+	fmt.Println("You are ready to GO!")
 }
 
 func createDefaultProject() {
@@ -66,7 +67,7 @@ func createDefaultProject() {
 	writeFile("/src/domain/gateways.go", "gateways")
 
 	writeFile("/config.json", "configjson")
-	writeFile("/logo", "logo")
+	writeLogo()
 
 	writeFile("/.gitignore", "gitignore")
 }
@@ -118,23 +119,66 @@ func writeFile(path, templName string) {
 	tmpl.Execute(output, projectName)
 }
 
+func writeLogo() {
+	output, err := os.Create(fmt.Sprintf("%s/%s", projectName, "logo"))
+	if err != nil {
+		fmt.Printf("Cannot create file: %s\n", err)
+		os.Exit(2)
+	}
+	defer output.Close()
+	tmpl := template.New("a")
+	tmpl, err = tmpl.Parse(genLogo())
+	if err != nil {
+		panic(err)
+	}
+	tmpl.Execute(output, projectName)
+}
+
 func createDir(path string) {
 	os.Mkdir(fmt.Sprintf("%s%s", projectName, path), os.ModePerm)
 }
 
 func printLogo() {
-	p := fmt.Println
-	p("               .---._")
-	p("           .--(. '  .).--.      . .-.")
-	p("        . ( ' _) .)` (   .)-. ( ) '-'")
-	p("       ( ,  ).        `(' . _)")
-	p("     (')  _________      '-'")
-	p("     ____[_________]                                         ________")
-	p("     \\__/ | _ \\  ||    ,;,;,,                               [________]")
-	p("     _][__|(\")/__||  ,;;;;;;;;,   __________   __________   _| Loco |_")
-	p("    /             | |____      | |          | |  ___     | |      ____|")
-	p("   (| .--.    .--.| |     ___  | |   |  |   | |      ____| |____      |")
-	p("   /|/ .. \\~~/ .. \\_|_.-.__.-._|_|_.-:__:-._|_|_.-.__.-._|_|_.-.__.-._|")
-	p("+=/_|\\ '' /~~\\ '' /=+( o )( o )+==( o )( o )=+=( o )( o )+==( o )( o )=+=")
-	p("='=='='--'==+='--'===+'-'=='-'==+=='-'+='-'===+='-'=='-'==+=='-'=+'-'jgs+")
+	fmt.Println(genLogo())
+}
+
+func genLogo() string {
+	var b bytes.Buffer
+	p := b.WriteString
+	p("                (                           )\n")
+	p("          ) )( (                           ( ) )( (\n")
+	p("       ( ( ( )  ) )                     ( (   (  ) )(\n")
+	p("      ) )     ,,\\\\\\                     ///,,       ) (\n")
+	p("   (  ((    (\\\\\\\\//                     \\\\////)      )\n")
+	p("    ) )    (-(__//                       \\\\__)-)     (\n")
+	p("   (((   ((-(__||                         ||__)-))    ) )\n")
+	p("  ) )   ((-(-(_||           ```\\__        ||_)-)-))   ((\n")
+	p("  ((   ((-(-(/(/\\        ''; 9.- `      //\\)\\)-)-))    )\n")
+	p("   )   (-(-(/(/(/\\      '';;;;-\\~      //\\)\\)\\)-)-)   (   )\n")
+	p("(  (   ((-(-(/(/(/\\======,:;:;:;:,======/\\)\\)\\)-)-))   )\n")
+	p("    )  '(((-(/(/(/(//////:%%%%%%%:\\\\\\\\\\\\)\\)\\)\\)-)))`  ( (\n")
+	p("   ((   '((-(/(/(/('uuuu:WWWWWWWWW:uuuu`)\\)\\)\\)-))`    )\n")
+	p("     ))  '((-(/(/(/('|||:wwwwwwwww:|||')\\)\\)\\)-))`    ((\n")
+	p("  (   ((   '((((/(/('uuu:WWWWWWWWW:uuu`)\\)\\))))`     ))\n")
+	p("        ))   '':::UUUUUU:wwwwwwwww:UUUUUU:::``     ((   )\n")
+	p("          ((      '''''''\\uuuuuuuu/``````         ))\n")
+	p("           ))            `JJJJJJJJJ`           ((\n")
+	p("             ((            LLLLLLLLLLL         ))\n")
+	p("               ))         ///|||||||\\\\\\       ((\n")
+	p("                 ))      (/(/(/(^)\\)\\)\\)       ((\n")
+	p("                  ((                           ))\n")
+	p("                    ((                       ((\n")
+	p("                      ( )( ))( ( ( ) )( ) (()\n")
+	p("")
+	p("@@@@@@@   @@@  @@@   @@@@@@   @@@@@@@@  @@@  @@@  @@@  @@@  @@@\n")
+	p("@@@@@@@@  @@@  @@@  @@@@@@@@  @@@@@@@@  @@@@ @@@  @@@  @@@  @@@\n")
+	p("@@!  @@@  @@!  @@@  @@!  @@@  @@!       @@!@!@@@  @@!  @@!  !@@\n")
+	p("!@!  @!@  !@!  @!@  !@!  @!@  !@!       !@!!@!@!  !@!  !@!  @!!\n")
+	p("@!@@!@!   @!@!@!@!  @!@  !@!  @!!!:!    @!@ !!@!  !!@   !@@!@!\n")
+	p("!!@!!!    !!!@!!!!  !@!  !!!  !!!!!:    !@!  !!!  !!!    @!!!\n")
+	p("!!:       !!:  !!!  !!:  !!!  !!:       !!:  !!!  !!:   !: :!!\n")
+	p(":!:       :!:  !:!  :!:  !:!  :!:       :!:  !:!  :!:  :!:  !:!\n")
+	p(" ::       ::   :::  ::::: ::   :: ::::   ::   ::   ::   ::  :::\n")
+	p(" :         :   : :   : :  :   : :: ::   ::    :   :     :   ::\n")
+	return b.String()
 }

@@ -1,9 +1,9 @@
 package controllers
 
 import (
-	"github.com/deltegui/locomotive"
+	"github.com/deltegui/phoenix"
 )
 
 func Register() {
-	locomotive.MapRoot(NewErrorController)
+	phoenix.MapRoot(NotFoundError)
 }

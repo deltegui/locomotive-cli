@@ -1,5 +1,38 @@
 package domain
 
+import (
+	"net/http"
+
+	"github.com/deltegui/phoenix"
+)
+
+type Presenter interface {
+	Present(data interface{})
+	PresentError(data error)
+}
+
+type BridgePresenter struct {
+	Renderer phoenix.Renderer
+}
+
+func (b BridgePresenter) Present(data interface{}) {
+	b.Renderer.Render(data)
+}
+
+func (b BridgePresenter) PresentError(err error) {
+	b.Renderer.RenderError(err)
+}
+
+type JSONPresenter struct {
+	BridgePresenter
+}
+
+func NewJSONPresenter(w http.ResponseWriter) JSONPresenter {
+	return JSONPresenter{
+		BridgePresenter: BridgePresenter{phoenix.JSONRenderer{w}},
+	}
+}
+
 type UseCaseRequest interface{}
 
 var EmptyRequest UseCaseRequest = struct{}{}

@@ -4,15 +4,14 @@ import (
 	"{{.}}/src/configuration"
 	"{{.}}/src/controllers"
 
-	"github.com/deltegui/locomotive"
-	"github.com/deltegui/locomotive/vars"
+	"github.com/deltegui/phoenix"
 )
 
 func main() {
-	locomotive.Configure().
+	phoenix.Configure().
 		SetProjectInfo("{{.}}", "0.1.0").
 		EnableLogoFile()
 	config := configuration.Load()
 	controllers.Register()
-	locomotive.Run(config.ListenURL)
+	phoenix.Run(config.ListenURL)
 }
