@@ -1,12 +1,13 @@
 package controllers
 
 import (
-	"{{.}}/src/domain"
 	"net/http"
+
+	"github.com/deltegui/phoenix"
 )
 
 func NotFoundError() http.HandlerFunc {
 	return func(w http.ResponseWriter, req *http.Request) {
-		domain.NewJSONPresenter(w).Present(struct{ Code string }{Code: "404"})
+		phoenix.NewJSONRenderer(w).Render(struct{ Code string }{Code: "404"})
 	}
 }

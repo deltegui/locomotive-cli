@@ -8,12 +8,13 @@ import (
 )
 
 func main() {
-	phoenix.Configure().
+	app := phoenix.NewApp()
+	app.Configure().
 		SetProjectInfo("{{.}}", "0.1.0").
 		EnableLogoFile().
 		EnableStaticServer().
-		EnableTemplates()
+		EnableSessions()
 	config := configuration.Load()
-	controllers.Register()
-	phoenix.Run(config.ListenURL)
+	controllers.Register(app)
+	app.Run(config.ListenURL)
 }

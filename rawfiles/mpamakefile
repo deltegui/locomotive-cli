@@ -1,6 +1,6 @@
 build:
 	mkdir ./build
-	go build -o ./build/fynd ./main.go
+	go build -o ./build/{{.}} ./main.go
 
 clean:
 	rm -rf ./build

@@ -6,13 +6,14 @@ var store map[string]string = map[string]string{
 	"apierrorcontroller": `package controllers
 
 import (
-	"{{.}}/src/domain"
 	"net/http"
+
+	"github.com/deltegui/phoenix"
 )
 
 func NotFoundError() http.HandlerFunc {
 	return func(w http.ResponseWriter, req *http.Request) {
-		domain.NewJSONPresenter(w).Present(struct{ Code string }{Code: "404"})
+		phoenix.NewJSONRenderer(w).Render(struct{ Code string }{Code: "404"})
 	}
 }
 `,
@@ -26,13 +27,15 @@ import (
 )
 
 func main() {
-	phoenix.Configure().
+	app := phoenix.NewApp()
+	app.Configure().
 		SetProjectInfo("{{.}}", "0.1.0").
 		EnableLogoFile()
 	config := configuration.Load()
-	controllers.Register()
-	phoenix.Run(config.ListenURL)
+	controllers.Register(app)
+	app.Run(config.ListenURL)
 }
+
 `,
 	"config": `package configuration
 
@@ -84,8 +87,7 @@ import (
 
 func NotFoundError() http.HandlerFunc {
 	return func(w http.ResponseWriter, req *http.Request) {
-		renderer := phoenix.HTMLRenderer{w}
-		renderer.RenderWithMeta(nil, phoenix.RenderMetadata{"notfound.html"})
+		phoenix.NewHTMLRenderer(w).Render("notfound.html")
 	}
 }
 `,
@@ -97,40 +99,13 @@ import (
 	"github.com/deltegui/phoenix"
 )
 
-type Presenter interface {
-	Present(data interface{})
-	PresentError(data error)
-}
-
-type BridgePresenter struct {
-	Renderer phoenix.Renderer
-}
-
-func (b BridgePresenter) Present(data interface{}) {
-	b.Renderer.Render(data)
-}
-
-func (b BridgePresenter) PresentError(err error) {
-	b.Renderer.RenderError(err)
-}
-
-type JSONPresenter struct {
-	BridgePresenter
-}
-
-func NewJSONPresenter(w http.ResponseWriter) JSONPresenter {
-	return JSONPresenter{
-		BridgePresenter: BridgePresenter{phoenix.JSONRenderer{w}},
-	}
-}
-
 type UseCaseRequest interface{}
+
+type UseCaseResponse interface{}
 
 var EmptyRequest UseCaseRequest = struct{}{}
 
-type UseCase interface {
-	Exec(Presenter, UseCaseRequest)
-}
+type UseCase func(UseCaseRequest) UseCaseResponse
 `,
 	"gitignore": `.DS_Store
 node_modules
@@ -142,8 +117,8 @@ import (
 	"github.com/deltegui/phoenix"
 )
 
-func Register() {
-	phoenix.MapRoot(NotFoundError)
+func Register(app phoenix.App) {
+	app.MapRoot(NotFoundError)
 }
 `,
 	"mpamain": `package main
@@ -156,19 +131,20 @@ import (
 )
 
 func main() {
-	phoenix.Configure().
+	app := phoenix.NewApp()
+	app.Configure().
 		SetProjectInfo("{{.}}", "0.1.0").
 		EnableLogoFile().
 		EnableStaticServer().
-		EnableTemplates()
+		EnableSessions()
 	config := configuration.Load()
-	controllers.Register()
-	phoenix.Run(config.ListenURL)
+	controllers.Register(app)
+	app.Run(config.ListenURL)
 }
 `,
 	"mpamakefile": `build:
 	mkdir ./build
-	go build -o ./build/fynd ./main.go
+	go build -o ./build/{{.}} ./main.go
 
 clean:
 	rm -rf ./build
