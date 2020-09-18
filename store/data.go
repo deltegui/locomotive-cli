@@ -13,7 +13,7 @@ import (
 
 func NotFoundError() http.HandlerFunc {
 	return func(w http.ResponseWriter, req *http.Request) {
-		phoenix.NewJSONRenderer(w).Render(struct{ Code string }{Code: "404"})
+		phoenix.NewJSONPresenter(w).Present(struct{ Code string }{Code: "404"})
 	}
 }
 `,
@@ -87,7 +87,7 @@ import (
 
 func NotFoundError() http.HandlerFunc {
 	return func(w http.ResponseWriter, req *http.Request) {
-		phoenix.NewHTMLRenderer(w).Render("notfound.html")
+		phoenix.NewHTMLPresenter(w, "notfound.html").Present(nil)
 	}
 }
 `,
@@ -163,81 +163,4 @@ watch:
     404
 </body>
 </html>`,
-	"packagejson": `{
-  "name": "{{.}}",
-  "version": "0.1.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "@babel/core": "^7.7.5",
-    "@babel/preset-env": "^7.7.5",
-    "babel-loader": "^8.0.6",
-    "babel-minify-webpack-plugin": "^0.3.1",
-    "css-loader": "^3.2.1",
-    "style-loader": "^1.0.1",
-    "webpack": "^4.41.2",
-    "webpack-cli": "^3.3.10"
-  }
-}`,
-	"webpackconf": `const path = require('path');
-const MinifyPlugin = require('babel-minify-webpack-plugin')
-
-console.log((process.env.pro) ? 'production' : 'development');
-
-const outputFolder = (process.env.pro) ? './build/static/' : './static'
-
-module.exports = {
-  mode: (process.env.pro) ? 'production' : 'development',
-  entry: './static/index.js',
-  output: {
-    filename: 'bundle.js',
-    path: path.join(__dirname, outputFolder),
-  },
-  module: {
-    rules: [
-      {
-        test: /\.css$/,
-        use: [
-          'style-loader',
-          'css-loader',
-        ],
-      },
-      {
-        test: /\.js$/,
-        exclude: /node_modules/,
-        use: {
-          loader: 'babel-loader',
-          options: {
-            presets: [
-              '@babel/preset-env',
-            ],
-          },
-        },
-      }
-    ],
-  },
-  plugins: [new MinifyPlugin()],
-};`,
-	"webpackindexjs": ``,
-	"webpackmakefile": `build:
-	mkdir ./build
-	go build -o ./build/fynd ./main.go
-	pro=pro node ./node_modules/webpack/bin/webpack.js --config ./webpack.config.js
-
-clean: remove-dev-assets
-	rm -rf ./build
-
-dev-assets:
-	node ./node_modules/webpack/bin/webpack.js --config ./webpack.config.js
-
-remove-dev-assets:
-	rm -rf ./static/bundle.js
-
-watch: dev-assets
-	reflex -r '(.go|.html)' -s -R 'node_modules' -- sh -c 'go run ./main.go'`,
 }

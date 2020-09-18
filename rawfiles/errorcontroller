@@ -8,6 +8,6 @@ import (
 
 func NotFoundError() http.HandlerFunc {
 	return func(w http.ResponseWriter, req *http.Request) {
-		phoenix.NewHTMLRenderer(w).Render("notfound.html")
+		phoenix.NewHTMLPresenter(w, "notfound.html").Present(nil)
 	}
 }
