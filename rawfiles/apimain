@@ -13,6 +13,7 @@ func main() {
 		SetProjectInfo("{{.}}", "0.1.0").
 		EnableLogoFile()
 	config := configuration.Load()
+	app.Injector.Add(func() configuration.Configuration { return config })
 	controllers.Register(app)
 	app.Run(config.ListenURL)
 }

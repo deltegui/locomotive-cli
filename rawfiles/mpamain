@@ -15,6 +15,7 @@ func main() {
 		EnableStaticServer().
 		EnableSessions()
 	config := configuration.Load()
+	app.Injector.Add(func() configuration.Configuration { return config })
 	controllers.Register(app)
 	app.Run(config.ListenURL)
 }

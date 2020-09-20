@@ -32,6 +32,7 @@ func main() {
 		SetProjectInfo("{{.}}", "0.1.0").
 		EnableLogoFile()
 	config := configuration.Load()
+	app.Injector.Add(func() configuration.Configuration { return config })
 	controllers.Register(app)
 	app.Run(config.ListenURL)
 }
@@ -52,6 +53,7 @@ func Load() Configuration {
 	return *configloader.NewConfigLoaderFor(&Configuration{}).
 		AddHook(configloader.CreateFileHook("./config.json")).
 		AddHook(configloader.CreateParamsHook()).
+		AddHook(configloader.CreateEnvHook()).
 		Retrieve().(*Configuration)
 }`,
 	"configjson": `{
@@ -108,17 +110,24 @@ var EmptyRequest UseCaseRequest = struct{}{}
 type UseCase func(UseCaseRequest) UseCaseResponse
 `,
 	"gitignore": `.DS_Store
-node_modules
-build
-/static/bundle.js`,
+build`,
 	"injector": `package controllers
 
 import (
 	"github.com/deltegui/phoenix"
 )
 
+// ShowMeURL controller is for demo purposes only. Delete it and create new controllers
+// outside this file.
+func ShowMeURL(config configuration.Configuration) http.HandlerFunc {
+	return func(w http.ResponseWriter, req *http.Request) {
+		phoenix.NewJSONPresenter(w).Present(config.ListenURL)
+	}
+}
+
 func Register(app phoenix.App) {
-	app.MapRoot(NotFoundError)
+	app.MapRoot(ShowMeURL)
+	app.Get("404", NotFoundError)
 }
 `,
 	"mpamain": `package main
@@ -138,6 +147,7 @@ func main() {
 		EnableStaticServer().
 		EnableSessions()
 	config := configuration.Load()
+	app.Injector.Add(func() configuration.Configuration { return config })
 	controllers.Register(app)
 	app.Run(config.ListenURL)
 }

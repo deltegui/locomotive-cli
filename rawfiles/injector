@@ -4,6 +4,15 @@ import (
 	"github.com/deltegui/phoenix"
 )
 
+// ShowMeURL controller is for demo purposes only. Delete it and create new controllers
+// outside this file.
+func ShowMeURL(config configuration.Configuration) http.HandlerFunc {
+	return func(w http.ResponseWriter, req *http.Request) {
+		phoenix.NewJSONPresenter(w).Present(config.ListenURL)
+	}
+}
+
 func Register(app phoenix.App) {
-	app.MapRoot(NotFoundError)
+	app.MapRoot(ShowMeURL)
+	app.Get("404", NotFoundError)
 }

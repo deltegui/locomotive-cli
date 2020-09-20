@@ -8,6 +8,8 @@ github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSs
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/deltegui/configloader v1.0.1 h1:4f82hDrI6x9+c7wlcaEAOOuoPK1SxywVLRIMPW8xHbQ=
 github.com/deltegui/configloader v1.0.1/go.mod h1:ClfIx7ZcwQANyhdNXnsq4UR2PIGlwObTzZEerlTO2Vc=
+github.com/deltegui/configloader v1.2.0 h1:ZjNeU/O8WEJIGJEbKmZN9xaMzdL+AcMb9QPHXGXD7yo=
+github.com/deltegui/configloader v1.2.0/go.mod h1:hB6MlMGVLpHmQS0GUBh7oJ4b7r6GfKUb7BGMgyFBkoA=
 github.com/deltegui/locomotive v0.4.0/go.mod h1:/zfbF3zxhZ3+TglpXwfqnzXYtnHZdj1W9uULoEH8TX4=
 github.com/deltegui/phoenix v0.13.1 h1:AkOyFYV52ks2zlUeZfrHrG1hmCOVDNwWmnZL5R3DQ5o=
 github.com/deltegui/phoenix v0.13.1/go.mod h1:hVhdt1JtH306iCuuBco0amAeqPOCo4WAHaZ+ieslwD4=

@@ -13,5 +13,6 @@ func Load() Configuration {
 	return *configloader.NewConfigLoaderFor(&Configuration{}).
 		AddHook(configloader.CreateFileHook("./config.json")).
 		AddHook(configloader.CreateParamsHook()).
+		AddHook(configloader.CreateEnvHook()).
 		Retrieve().(*Configuration)
 }
