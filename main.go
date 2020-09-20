@@ -12,7 +12,7 @@ import (
 
 //go:generate go run ./generators/files.go
 
-const version string = "0.1.14"
+const version string = "0.2.1"
 
 var projectName string
 
