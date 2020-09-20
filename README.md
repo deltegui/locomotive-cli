@@ -1,5 +1,5 @@
 # Phoenix CLI
-In spite of you can create a new phoenix project from scratch, can be a repeating task. You can automate it with phoenix cli
+Creating a new phoenix project from scratch, can be a repeating task. You can automate it with phoenix cli
 
 ## Install
 just run
